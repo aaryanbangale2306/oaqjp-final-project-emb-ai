@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emotion Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .input-section {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            min-height: 100px;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .results {
+            margin-top: 20px;
+            display: none;
+        }
+        .results.show {
+            display: block;
+        }
+        .emotion-bar {
+            margin-bottom: 10px;
+        }
+        .emotion-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .emotion-value {
+            background-color: #ddd;
+            border-radius: 4px;
+            height: 20px;
+            overflow: hidden;
+        }
+        .emotion-fill {
+            background-color: #4CAF50;
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .dominant-emotion {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+        }
+        .error {
+            color: #d32f2f;
+            padding: 10px;
+            background-color: #ffebee;
+            border-radius: 4px;
+            display: none;
+            margin-top: 10px;
+        }
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Emotion Detection</h1>
+        
+        <div class="input-section">
+            <textarea id="textInput" placeholder="Enter text to analyze..." autocomplete="off"></textarea>
+            <button onclick="analyzeText()">Analyze Emotions</button>
+        </div>
+        
+        <div class="error" id="errorMessage"></div>
+        
+        <div class="results" id="results">
+            <h2>Results</h2>
+            
+            <div class="emotion-bar">
+                <div class="emotion-label">Anger: <span id="angerValue">0</span></div>
+                <div class="emotion-value">
+                    <div class="emotion-fill" id="angerFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="emotion-bar">
+                <div class="emotion-label">Disgust: <span id="disgustValue">0</span></div>
+                <div class="emotion-value">
+                    <div class="emotion-fill" id="disgustFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="emotion-bar">
+                <div class="emotion-label">Fear: <span id="fearValue">0</span></div>
+                <div class="emotion-value">
+                    <div class="emotion-fill" id="fearFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="emotion-bar">
+                <div class="emotion-label">Joy: <span id="joyValue">0</span></div>
+                <div class="emotion-value">
+                    <div class="emotion-fill" id="joyFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="emotion-bar">
+                <div class="emotion-label">Sadness: <span id="sadnessValue">0</span></div>
+                <div class="emotion-value">
+                    <div class="emotion-fill" id="sadnessFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="dominant-emotion">
+                <strong>Dominant Emotion:</strong> <span id="dominantEmotion">-</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function analyzeText() {
+            const text = document.getElementById("textInput").value;
+            const errorDiv = document.getElementById("errorMessage");
+            const resultsDiv = document.getElementById("results");
+            
+            // Clear previous error
+            errorDiv.classList.remove("show");
+            errorDiv.textContent = "";
+            
+            // Validate input
+            if (!text || text.trim() === "") {
+                errorDiv.textContent = "Invalid text! Please enter some text.";
+                errorDiv.classList.add("show");
+                resultsDiv.classList.remove("show");
+                return;
+            }
+            
+            // Send request to server
+            fetch("/emotion_detection", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    textToAnalyze: text
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw error;
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display results
+                document.getElementById("angerValue").textContent = data.anger.toFixed(3);
+                document.getElementById("angerFill").style.width = (data.anger * 100) + "%";
+                
+                document.getElementById("disgustValue").textContent = data.disgust.toFixed(3);
+                document.getElementById("disgustFill").style.width = (data.disgust * 100) + "%";
+                
+                document.getElementById("fearValue").textContent = data.fear.toFixed(3);
+                document.getElementById("fearFill").style.width = (data.fear * 100) + "%";
+                
+                document.getElementById("joyValue").textContent = data.joy.toFixed(3);
+                document.getElementById("joyFill").style.width = (data.joy * 100) + "%";
+                
+                document.getElementById("sadnessValue").textContent = data.sadness.toFixed(3);
+                document.getElementById("sadnessFill").style.width = (data.sadness * 100) + "%";
+                
+                document.getElementById("dominantEmotion").textContent = data.dominant_emotion;
+                
+                resultsDiv.classList.add("show");
+                errorDiv.classList.remove("show");
+            })
+            .catch(error => {
+                errorDiv.textContent = error.error || "An error occurred while analyzing the text.";
+                errorDiv.classList.add("show");
+                resultsDiv.classList.remove("show");
+            });
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById("textInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter" && event.ctrlKey) {
+                analyzeText();
+            }
+        });
+    </script>
+</body>
+</html>
