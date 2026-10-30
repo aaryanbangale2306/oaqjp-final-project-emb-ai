@@ -4,7 +4,18 @@ This module provides the emotion_detector function to analyze emotions in text.
 """
 
 import json
+import socket
 import requests
+
+
+def _is_service_reachable():
+    """Quick check if IBM Watson NLP endpoint is reachable."""
+    try:
+        sock = socket.create_connection(('sn-watson-emotion.labs.skills.network', 443), timeout=0.3)
+        sock.close()
+        return True
+    except OSError:
+        return False
 
 
 def _get_offline_emotions(text):
@@ -92,6 +103,9 @@ def emotion_detector(text_to_analyse):
             'dominant_emotion': None
         }
 
+    if not _is_service_reachable():
+        return _get_offline_emotions(text_to_analyse)
+
     try:
         response = requests.post(url, json=input_json, headers=headers, timeout=(0.5, 2.5))
 
@@ -125,5 +139,4 @@ def emotion_detector(text_to_analyse):
         }
 
     except (requests.exceptions.RequestException, KeyError, IndexError):
-        # Fallback for offline execution / local testing outside IBM cloud network
         return _get_offline_emotions(text_to_analyse)

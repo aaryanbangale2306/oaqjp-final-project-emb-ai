@@ -1,26 +1,30 @@
-# Emotion Detection Web Application
+# oaqjp-final-project-emb-ai
 
 Final Project for IBM / Coursera: **Developing AI Applications with Python and Flask**
 
+## Project Name: oaqjp-final-project-emb-ai
+
+This repository contains the complete implementation of the Emotion Detection web application developed using the IBM Watson NLP Emotion Predict service and deployed using Python and Flask.
+
+---
+
 ## Project Overview
 
-This project implements an AI-powered Emotion Detection web application using the IBM Watson NLP (Natural Language Processing) Emotion Predict service, packaged as a reusable Python module and deployed as an interactive web service using Flask.
-
-The application detects five core emotions from text:
+The `oaqjp-final-project-emb-ai` application detects emotional tones from input text using the IBM Watson NLP runtime library. It analyzes text and returns scores for five distinct emotions:
 - **anger**
 - **disgust**
 - **fear**
 - **joy**
 - **sadness**
 
-It returns individual confidence scores for each emotion and identifies the **dominant emotion**.
+It determines and outputs the **dominant emotion** based on the highest confidence score.
 
 ---
 
 ## Project Structure
 
 ```
-emotion-detector/
+oaqjp-final-project-emb-ai/
 ├── EmotionDetection/
 │   ├── __init__.py               # Package initialization (exports emotion_detector)
 │   ├── emotion_detection.py      # Watson NLP API integration & emotion extraction
@@ -32,8 +36,12 @@ emotion-detector/
 ├── test_emotion_detection.py     # Root test suite for Coursera grading
 ├── server.py                     # Flask application server (port 5000)
 ├── requirements.txt              # Project dependencies
+├── 2b_application_creation.txt   # Task 2 application creation terminal output
+├── 4b_packaging_test.txt         # Task 4 packaging test output
 ├── 6b_deployment_test.png        # Screenshot: Deployment test with valid text
 ├── 7c_error_handling_interface.png # Screenshot: Error handling on blank input
+├── 8a_server_modified            # Complete modified server.py source code
+├── 8b_static_code_analysis.txt   # Pylint static analysis output (10.00/10)
 ├── capture_screenshots.py        # Automated test verification and capture script
 └── README.md                     # Documentation
 ```
@@ -42,11 +50,11 @@ emotion-detector/
 
 ## Features
 
-1. **IBM Watson NLP Integration**: Queries Watson NLP Emotion Predict service (`emotion_aggregated-workflow_lang_en_stock`).
-2. **Modular Python Package**: Packaged in `EmotionDetection` for simple imports (`from EmotionDetection import emotion_detector`).
+1. **IBM Watson NLP Integration**: Queries the Watson NLP Emotion Predict service (`emotion_aggregated-workflow_lang_en_stock`).
+2. **Modular Python Package**: Packaged in `EmotionDetection` for simple imports (`from EmotionDetection.emotion_detection import emotion_detector`).
 3. **Comprehensive Unit Testing**: Validates dominant emotion outputs across 5 core emotional statements.
-4. **Flask Web Server**: Deployed on `localhost:5000` with `/` and `/emotionDetector` routes.
-5. **Robust Error Handling**: Handles HTTP 400 responses, empty strings, and whitespace input returning `None` values, displayed as `"Invalid text! Please try again!"` on the web interface.
+4. **Flask Web Server**: Deployed on `0.0.0.0:5000` with `/` and `/emotionDetector` routes.
+5. **Robust Error Handling**: Handles HTTP 400 responses, empty strings, and whitespace input returning `None` values, displaying `"Invalid text! Please try again!"` on the web interface.
 6. **Code Quality**: Verified with **Pylint** achieving a perfect **10.00 / 10.00** score.
 
 ---
@@ -55,8 +63,8 @@ emotion-detector/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/aaryanbangale2306/emotion-detector.git
-cd emotion-detector
+git clone https://github.com/aaryanbangale2306/oaqjp-final-project-emb-ai.git
+cd oaqjp-final-project-emb-ai
 ```
 
 ### 2. Create and activate virtual environment
@@ -156,4 +164,5 @@ pylint server.py
 ## Author
 
 **Aaryan Bangale**  
-GitHub: [aaryanbangale2306](https://github.com/aaryanbangale2306)
+GitHub: [aaryanbangale2306](https://github.com/aaryanbangale2306)  
+Repository: [oaqjp-final-project-emb-ai](https://github.com/aaryanbangale2306/oaqjp-final-project-emb-ai)
