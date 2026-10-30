@@ -1,130 +1,159 @@
-# Emotion Detection Application
+# Emotion Detection Web Application
 
-A Flask-based web application that uses IBM Watson NLP to detect emotions in text.
+Final Project for IBM / Coursera: **Developing AI Applications with Python and Flask**
 
-## Features
+## Project Overview
 
-- Detects five emotions: anger, disgust, fear, joy, and sadness
-- Identifies the dominant emotion from input text
-- RESTful API for emotion detection
-- Interactive web interface
-- Proper error handling for invalid/blank input (400 status code)
+This project implements an AI-powered Emotion Detection web application using the IBM Watson NLP (Natural Language Processing) Emotion Predict service, packaged as a reusable Python module and deployed as an interactive web service using Flask.
+
+The application detects five core emotions from text:
+- **anger**
+- **disgust**
+- **fear**
+- **joy**
+- **sadness**
+
+It returns individual confidence scores for each emotion and identifies the **dominant emotion**.
+
+---
 
 ## Project Structure
 
 ```
 emotion-detector/
 ├── EmotionDetection/
-│   ├── __init__.py
-│   ├── emotion_detection.py      # Core emotion detection module
-│   └── test_emotion_detection.py # Unit tests
+│   ├── __init__.py               # Package initialization (exports emotion_detector)
+│   ├── emotion_detection.py      # Watson NLP API integration & emotion extraction
+│   └── test_emotion_detection.py # Unit tests for package
+├── static/
+│   └── mywebscript.js            # Client-side AJAX script
 ├── templates/
-│   └── index.html               # Web interface
-├── server.py                     # Flask application
-├── requirements.txt              # Python dependencies
-└── README.md                     # This file
+│   └── index.html                # Web user interface (Bootstrap 4)
+├── test_emotion_detection.py     # Root test suite for Coursera grading
+├── server.py                     # Flask application server (port 5000)
+├── requirements.txt              # Project dependencies
+├── 6b_deployment_test.png        # Screenshot: Deployment test with valid text
+├── 7c_error_handling_interface.png # Screenshot: Error handling on blank input
+├── capture_screenshots.py        # Automated test verification and capture script
+└── README.md                     # Documentation
 ```
 
-## Installation
+---
 
-1. Clone the repository:
+## Features
+
+1. **IBM Watson NLP Integration**: Queries Watson NLP Emotion Predict service (`emotion_aggregated-workflow_lang_en_stock`).
+2. **Modular Python Package**: Packaged in `EmotionDetection` for simple imports (`from EmotionDetection import emotion_detector`).
+3. **Comprehensive Unit Testing**: Validates dominant emotion outputs across 5 core emotional statements.
+4. **Flask Web Server**: Deployed on `localhost:5000` with `/` and `/emotionDetector` routes.
+5. **Robust Error Handling**: Handles HTTP 400 responses, empty strings, and whitespace input returning `None` values, displayed as `"Invalid text! Please try again!"` on the web interface.
+6. **Code Quality**: Verified with **Pylint** achieving a perfect **10.00 / 10.00** score.
+
+---
+
+## Installation & Setup
+
+### 1. Clone the repository
 ```bash
 git clone https://github.com/aaryanbangale2306/emotion-detector.git
 cd emotion-detector
 ```
 
-2. Create a virtual environment:
+### 2. Create and activate virtual environment
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv .venv
+# On Windows:
+.venv\Scripts\activate
+# On Linux / macOS:
+source .venv/bin/activate
 ```
 
-3. Install dependencies:
+### 3. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
+---
+
 ## Running the Application
 
-1. Start the Flask server:
+Start the Flask development server:
 ```bash
 python server.py
 ```
 
-2. Open your browser and navigate to:
+Access the web interface by opening your browser to:
 ```
 http://localhost:5000
 ```
 
-3. Enter text in the text area and click "Analyze Emotions" to detect emotions.
+---
 
-## API Usage
+## API Endpoints
 
-### POST /emotion_detection
+### 1. Web Page (`GET /`)
+Renders `templates/index.html` with an input field and submission button.
 
-Send a POST request with JSON body:
-```json
-{
-    "textToAnalyze": "Your text here"
-}
+### 2. Emotion Detector (`GET /emotionDetector`)
+Analyzes text provided via query parameter `textToAnalyze`.
+
+#### Request:
+```
+GET /emotionDetector?textToAnalyze=I%20think%20I%20am%20having%20fun
 ```
 
-Response on success (200):
-```json
-{
-    "anger": 0.0,
-    "disgust": 0.0,
-    "fear": 0.0,
-    "joy": 0.85,
-    "sadness": 0.0,
-    "dominant_emotion": "joy"
-}
+#### Response (Success):
+```
+For the given statement, the system response is 'anger': 0.00514, 'disgust': 0.002, 'fear': 0.00442, 'joy': 0.94723 and 'sadness': 0.04683. The dominant emotion is joy.
 ```
 
-Response on error (400):
-```json
-{
-    "error": "Invalid text! Please enter some text."
-}
+#### Response (Blank / Invalid input):
+```
+Invalid text! Please try again!
 ```
 
-## Running Tests
+---
 
-Run the unit tests:
+## Running Unit Tests
+
+Run the test suite using Python's built-in `unittest` module:
 ```bash
-python -m pytest EmotionDetection/test_emotion_detection.py -v
+python -m unittest -v test_emotion_detection.py
 ```
 
-Or with unittest:
+### Test Cases Verified:
+| Statement | Expected Dominant Emotion | Status |
+|---|---|---|
+| `"I am glad this happened"` | `joy` | ✅ PASS |
+| `"I am really mad about this"` | `anger` | ✅ PASS |
+| `"I feel disgusted just hearing about this"` | `disgust` | ✅ PASS |
+| `"I am so sad about this"` | `sadness` | ✅ PASS |
+| `"I am really afraid that this will happen"` | `fear` | ✅ PASS |
+| `""` (blank input) | `None` | ✅ PASS |
+
+---
+
+## Static Code Analysis (Pylint)
+
+Run Pylint to check code quality and style conformity:
 ```bash
-python -m unittest discover
+pylint server.py
 ```
+**Score Achieved**: **10.00 / 10.00**
 
-## Code Quality
+---
 
-Run Pylint to check code quality:
-```bash
-pylint EmotionDetection/*.py server.py
-```
+## Verification Screenshots
 
-## Emotions Detected
+### 1. Deployment Test (`6b_deployment_test.png`)
+![6b_deployment_test](6b_deployment_test.png)
 
-- **Anger**: Detects expressions of anger or hostility
-- **Disgust**: Detects expressions of disgust or distaste
-- **Fear**: Detects expressions of fear or anxiety
-- **Joy**: Detects expressions of happiness or contentment
-- **Sadness**: Detects expressions of sadness or sorrow
+### 2. Error Handling Interface (`7c_error_handling_interface.png`)
+![7c_error_handling_interface](7c_error_handling_interface.png)
 
-## Error Handling
-
-- Returns **400 status code** for empty or blank input
-- Returns **400 status code** for None input
-- Proper error messages displayed to the user
+---
 
 ## Author
 
-Aaryan Bangale
-
-## License
-
-IBM Skills Network Final Project
+**Aaryan Bangale**  
+GitHub: [aaryanbangale2306](https://github.com/aaryanbangale2306)

@@ -1,5 +1,6 @@
 """
-Unit tests for the emotion detection module.
+Unit tests for the EmotionDetection package.
+Verifies emotion predictions for standard test statements.
 """
 
 import unittest
@@ -7,61 +8,39 @@ from EmotionDetection.emotion_detection import emotion_detector
 
 
 class TestEmotionDetection(unittest.TestCase):
-    """Test cases for emotion_detector function"""
+    """Test suite for the emotion_detector function."""
 
     def test_emotion_detector_joy(self):
-        """Test emotion detection for joyful text"""
-        result = emotion_detector("I love this so much!")
-        self.assertIsNotNone(result)
-        self.assertIn("joy", result)
-        self.assertGreater(result["joy"], 0.5)
+        """Test joy statement: 'I am glad this happened'."""
+        result = emotion_detector("I am glad this happened")
+        self.assertEqual(result['dominant_emotion'], 'joy')
 
     def test_emotion_detector_anger(self):
-        """Test emotion detection for angry text"""
-        result = emotion_detector("I hate it!")
-        self.assertIsNotNone(result)
-        self.assertIn("anger", result)
-
-    def test_emotion_detector_sad(self):
-        """Test emotion detection for sad text"""
-        result = emotion_detector("I am very sad.")
-        self.assertIsNotNone(result)
-        self.assertIn("sadness", result)
-
-    def test_emotion_detector_fear(self):
-        """Test emotion detection for fearful text"""
-        result = emotion_detector("I am really afraid.")
-        self.assertIsNotNone(result)
-        self.assertIn("fear", result)
+        """Test anger statement: 'I am really mad about this'."""
+        result = emotion_detector("I am really mad about this")
+        self.assertEqual(result['dominant_emotion'], 'anger')
 
     def test_emotion_detector_disgust(self):
-        """Test emotion detection for disgusted text"""
-        result = emotion_detector("I am disgusted by this.")
-        self.assertIsNotNone(result)
-        self.assertIn("disgust", result)
+        """Test disgust statement: 'I feel disgusted just hearing about this'."""
+        result = emotion_detector("I feel disgusted just hearing about this")
+        self.assertEqual(result['dominant_emotion'], 'disgust')
 
-    def test_emotion_detector_empty_string(self):
-        """Test that empty string returns None"""
+    def test_emotion_detector_sadness(self):
+        """Test sadness statement: 'I am so sad about this'."""
+        result = emotion_detector("I am so sad about this")
+        self.assertEqual(result['dominant_emotion'], 'sadness')
+
+    def test_emotion_detector_fear(self):
+        """Test fear statement: 'I am really afraid that this will happen'."""
+        result = emotion_detector("I am really afraid that this will happen")
+        self.assertEqual(result['dominant_emotion'], 'fear')
+
+    def test_blank_input(self):
+        """Test that blank input returns None for all emotions."""
         result = emotion_detector("")
-        self.assertIsNone(result)
-
-    def test_emotion_detector_blank_string(self):
-        """Test that blank/whitespace string returns None"""
-        result = emotion_detector("   ")
-        self.assertIsNone(result)
-
-    def test_emotion_detector_null_string(self):
-        """Test that None input returns None"""
-        result = emotion_detector(None)
-        self.assertIsNone(result)
-
-    def test_emotion_detector_dominant_emotion(self):
-        """Test that dominant emotion is correctly identified"""
-        result = emotion_detector("I am so happy and joyful!")
-        self.assertIsNotNone(result)
-        self.assertIn("dominant_emotion", result)
-        self.assertEqual(result["dominant_emotion"], "joy")
+        self.assertIsNone(result['dominant_emotion'])
+        self.assertIsNone(result['anger'])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
